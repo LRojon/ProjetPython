@@ -1,0 +1,24 @@
+Il faut pas le même nom que les test (flaskr)
+Utiliser l'appli : BLACK pour reformaté le code
+Une boutique avec :
+- Une page pour lister les produits
+- Une page pour se connecter
+
+Je ne regarde pas :
+- Le html
+- Le CSS
+- JS
+
+Je regarde:
+- Le respect du guide de style (PEP8, vous pouvez utiliser Black)
+- La simplicité et la lisibilité du code
+- Les fonctionnalités
+
+Fonctionnalités supplémentaires:
+- Inscription
+- Panier / Commandes 
+- Panneau administrateur : création de produits, suivi des commandes
+- Panneau client : liste des commandes
+- Gestion de stocks, de mode de livraison
+- Promotions
+- ...
