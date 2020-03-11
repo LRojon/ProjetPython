@@ -9,6 +9,3 @@ def hello():
 @app.route('/john')
 def vntm():
 	return '<h3> vntm :) </h3>'
-
-	
-

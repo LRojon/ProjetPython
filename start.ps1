@@ -1,3 +1,3 @@
 venv\Scripts\activate
-$env:FLASK_APP = "hello.py"
+$env:FLASK_APP = "index.py"
 flask run
