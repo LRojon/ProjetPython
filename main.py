@@ -8,6 +8,7 @@ from flask_restful import Resource, Api
 from flask_jsonpify import jsonify
 import sqlite3
 
+
 class Boutique(Resource):
 
     def post(self, typex, command):
@@ -57,15 +58,15 @@ class User(Resource):
             return {'code': 500}
         else:
             return {
-                    'id': row[0], 
+                    'id': row[0],
                     'login': row[1],
                     'nom': row[2],
-                    'prenom': row[3] 
+                    'prenom': row[3]
                     }
 
 
 class Signup(Resource):
-    
+
     def post(self):
         login = request.json['login']
         nom = request.json['nom']
@@ -79,15 +80,16 @@ class Signup(Resource):
                         (login,))
             row = cur.fetchone()
             if row is None:
-                cur.execute('insert into client(login, nom, prenom, password) values(?, ?, ?, ?)',
+                cur.execute('insert into client(login, nom, prenom, password' +
+                            ') values(?, ?, ?, ?)',
                             (login, nom, prenom, password))
                 conn.commit()
                 return {'code': 200, 'message': 'OK'}
             else:
                 return {'code': 500, 'message': 'Pseudo déjà utilisé.'}
         else:
-            return {'code': 500, 'message': 'Les mots de passe ne correspondent pas.'}
-        
+            return {'code': 500, 'message': 'Les mots de passe ne correspond' +
+                    'ent pas.'}
 
 
 class Server:
@@ -116,7 +118,7 @@ class Server:
         @self.app.route("/shop/<login>")
         def shop(login):
             return render_template("shop.html", login=login)
-        
+
         @self.app.route("/signup")
         def sign():
             return render_template("signup.html")
