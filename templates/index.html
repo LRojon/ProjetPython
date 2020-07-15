@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" ></script>
+        <link rel="icon" href="https://fr.vecteezy.com/vecteur-libre/en-ligne" type="image/x-icon">
+        <title>La Boutique</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-4 text-center align-self-center">
+                    <br>
+                    <div id="card" class="card border-primary mb-3">
+                        <div class="card-header">
+                            <h3>La Boutique</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <input type="text" id="login" class="form-control" placeholder="Login">
+                                <br>
+                                <input type="password" id="password" class="form-control" placeholder="Password">
+                                <br>
+                                <button id="btnCo" class="btn btn-primary">Se connecter</button>
+                            </div>
+                            <div>
+                                <a href="/signup" class="link">S'inscrire</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4"></div>
+            </div>
+        </div>
+    </body>
+
+    <script src="https://cdn.jsdelivr.net/npm/jssha@3.1.0/dist/sha512.js"></script>
+    <script>
+        $("#btnCo").click(function(){
+            var dataSend = {login: $("#login").val(), password: $("#password").val()}
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/login');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.responseType = "json";
+            xhr.onload = function(){
+                if(xhr.status == 200)
+                {
+                    if(xhr.response.code == 200)
+                    {
+                        $("#card").removeClass("border-primary border-danger");
+                        $("#card").addClass("border-success");
+                        $("#btnCo").removeClass("btn-primary btn-danger");
+                        $("#btnCo").addClass("btn-success");
+                        setTimeout(redirect(xhr.response), 5000);
+
+                    }
+                    else if(xhr.response.code == 500)
+                    {
+                        $("#card").removeClass("border-primary border-success");
+                        $("#card").addClass("border-danger");
+                        $("#btnCo").removeClass("btn-primary btn-success");
+                        $("#btnCo").addClass("btn-danger");
+                    }
+                }
+            }
+            xhr.send(JSON.stringify(dataSend));
+        })
+
+        function redirect(data)
+        {
+            if(data.code == 200)
+            window.location.href = "/shop/" + dataSend.login;
+        }
+    </script>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" ></script>
+        <link rel="icon" href="https://fr.vecteezy.com/vecteur-libre/en-ligne" type="image/x-icon">
+        <title>La Boutique</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-4 text-center align-self-center">
+                    <br>
+                    <div id="card" class="card border-primary mb-3">
+                        <div class="card-header">
+                            <h3>La Boutique</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="nom" placeholder="Nom" id="nom">
+                                <br>
+                                <input type="text" class="form-control" name="prenom" placeholder="Prenom" id="prenom">
+                                <br>
+                                <input type="text" class="form-control" id="login" class="form-control" placeholder="Pseudo">
+                                <br>
+                                <input type="password" id="password" class="form-control" placeholder="Mot de passe">
+                                <br>
+                                <input type="password" name="confirm" class="form-control" placeholder="Confirmation" id="confirm">
+                                <br>
+                                <p id="err" style="color: red;"></p>
+                                <br>
+                                <button id="btnSubmit" class="btn btn-primary">S'inscrire</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4"></div>
+            </div>
+        </div>
+    </body>
+    <script>
+
+        function select(selection)
+        {
+            return document.querySelector(selection)
+        }
+
+        document.getElementById("btnSubmit").onclick = function()
+        {
+            var datasend = {
+                login: select("#login").value,
+                nom: select('#nom').value,
+                prenom: select('#prenom').value,
+                password: select('#password').value,
+                confirm: select('#confirm').value
+            }
+
+            let xhr = new XMLHttpRequest()
+            xhr.open('POST', '/checkSignup');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.responseType = "json";
+            xhr.onload = function()
+            {
+                if(xhr.status == 200)
+                {
+                    if(xhr.response.code == 200)
+                    {
+                        select("#btnSubmit").classList.remove('btn-primary', 'btn-danger');
+                        select('#btnSubmit').classList.add('btn-success');
+                        setTimeout(redirect(datasend.login), 5000);
+                    }
+                    else if(xhr.response.code == 500)
+                    {
+                        select("#btnSubmit").classList.remove('btn-primary', 'btn-success');
+                        select('#btnSubmit').classList.add('btn-danger');
+                        select('#err').innerHTML = xhr.response.message;
+                    }
+                }
+            }
+
+            xhr.send(JSON.stringify(datasend))
+        }
+
+        function redirect(login)
+        {
+            window.location = "/shop/" + login
+        }
+    </script>
+</html>

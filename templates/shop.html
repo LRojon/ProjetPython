@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" ></script>
+    <link rel="icon" href="https://fr.vecteezy.com/vecteur-libre/en-ligne" type="image/x-icon">
+    <title>La Boutique</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+                    <a class="navbar-brand" href="#">La Boutique</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                      <span class="navbar-toggler-icon"></span>
+                    </button>
+                  
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                      <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                          <a class="nav-link disabled" href="#">Acceuil <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link disabled" href="#">Panier</a>
+                        </li>
+                      </ul>
+                      <span class="navbar-text" id="hello">
+
+                      </span>
+                    </div>
+                  </nav>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3"></div>
+            <div id="res" class="col-6">
+
+            </div>
+            <div class="col-3"></div>
+        </div>
+    </div>
+</body>
+
+<script>
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/produits/get');
+    xhr.responseType = "json";
+    xhr.onload = function(){
+        if(xhr.status == 200)
+        {
+            var res = "<table class='table'><tr><th>Nom</th><th>Description</th><th>Prix</th></tr>";
+            let resArray = xhr.response.data;
+            resArray.forEach(elem => {
+                res += "<tr>";
+                res += "<td>" + elem.nom + "</td>";
+                res += "<td>" + elem.description + "</td>";
+                res += "<td>" + elem.prix + " € </td>";
+                res += "</tr>";
+            });
+            res += "</table>";
+
+            document.getElementById("res").innerHTML = res;
+
+            xhr = new XMLHttpRequest();
+            xhr.open('POST', '/user');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.responseType = "json";
+            xhr.onload = function(){
+                if(xhr.status == 200)
+                {
+                    let res = xhr.response.prenom + " " + xhr.response.nom;
+                    document.getElementById("hello").innerHTML = "Bonjour, " + res;
+                }
+            }
+
+            xhr.send(JSON.stringify({login: "{{ login }}"}));
+        }
+    }
+
+    xhr.send();
+
+    
+    function GET(param) {
+            var vars = {};
+            window.location.href.replace( location.hash, '' ).replace( 
+                /[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
+                function( m, key, value ) { // callback
+                    vars[key] = value !== undefined ? value : '';
+                }
+            );
+
+            if ( param ) {
+                return vars[param] ? vars[param] : null;	
+            }
+            return vars;
+        }
+</script>
+
+</html>
