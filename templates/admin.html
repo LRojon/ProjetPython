@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" ></script>
+    <link rel="icon" href="https://fr.vecteezy.com/vecteur-libre/en-ligne" type="image/x-icon">
+    <title>La Boutique</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-4">
+                <br>
+                <div id="success" class="alert alert-success" style="display: none;" role="alert">
+                    Le produit a bien été ajouté.
+                </div>
+                <div id="fail" class="alert alert-danger" style="display: none;" role="alert">
+                    Le produit existe déjà.
+                </div>
+            </div>
+            <div class="col-4 items-center">
+                <a href="/" class="link"></a>
+                <br>
+                <div class="card border-primary align-middle text-center">
+                    <div class="card-header">
+                        <h3>Nouveau produit</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <input type="text" name="name" id="nom" class="form-control" placeholder="Nom">
+                            <br>
+                            <input type="text" name="description" id="desc" class="form-control" placeholder="Description">
+                            <br>
+                            <input type="number" name="price" id="prix" class="form-control" placeholder="Prix (en €)" step="0.01">
+                            <br>
+                            <button type="submit" id="submit" class="btn btn-primary">Créer un nouveau produits</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4"></div>
+        </div>
+    </div>
+</body>
+<script>
+    function select(selection)
+    {
+        return document.querySelector(selection)
+    }
+
+    select("#submit").onclick = function()
+    {
+        let datasend = {nom: select("#nom").value, description: select("#desc").value, prix: select("#prix").value}
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '/produits/set');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.responseType = "json";
+        xhr.onload = function()
+        {
+            if(xhr.status == 200)
+            {
+                console.log(datasend)
+                console.log(xhr.response)
+                if(xhr.response.code == 200)
+                {
+                    $("#success").fadeIn(1000);
+                    $("#success").fadeOut(5000);
+                }
+                if(xhr.response.code == 500)
+                {
+                    $("#fail").fadeIn(1000);
+                    $("#fail").fadeOut(5000);
+                }
+            }
+        }
+
+        xhr.send(JSON.stringify(datasend));
+    }
+</script>
+</html>

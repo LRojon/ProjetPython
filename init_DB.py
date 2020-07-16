@@ -14,7 +14,7 @@ cur.execute(req)
 conn.commit()
 
 #Création des tables
-req = "CREATE TABLE client (id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT NOT NULL, nom TEXT NOT NULL, prenom TEXT NOT NULL, password TEXT NOT NULL)" 
+req = "CREATE TABLE client (id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT NOT NULL, nom TEXT NOT NULL, prenom TEXT NOT NULL, password TEXT NOT NULL, role TEXT NOT NULL)" 
 cur.execute(req)
 conn.commit()
 
@@ -24,11 +24,15 @@ conn.commit()
 
 #Insertion des données
 password = "azerty123"
-cur.execute ("INSERT INTO client ('login', 'nom', 'prenom', 'password') VALUES (?, ?, ?, ?)", ("RojonL", "Rojon", "Loic", str(password)))
+cur.execute ("INSERT INTO client ('login', 'nom', 'prenom', 'password', 'role') VALUES (?, ?, ?, ?, ?)", ("RojonL", "Rojon", "Loic", str(password), "user"))
 conn.commit ()
 
 password = "qsdfgh456"
-cur.execute ("INSERT INTO client ('login', 'nom', 'prenom', 'password') VALUES (?, ?, ?, ?)", ("LopezGomezJ", "Lopez Gomez", "Jonathan", str(password)))
+cur.execute ("INSERT INTO client ('login', 'nom', 'prenom', 'password', 'role') VALUES (?, ?, ?, ?, ?)", ("LopezGomezJ", "Lopez Gomez", "Jonathan", str(password), "user"))
+conn.commit ()
+
+password = "Admin"
+cur.execute ("INSERT INTO client ('login', 'nom', 'prenom', 'password', 'role') VALUES (?, ?, ?, ?, ?)", ("Admin", "istrateur", "Admin", str(password), "admin"))
 conn.commit ()
 
 cur.execute ("INSERT INTO produit ('nom', 'description', 'prix') VALUES (?, ?, ?)", ("Farfalle", "500g de farfalle", 0.82))

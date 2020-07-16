@@ -26,6 +26,21 @@ class Boutique(Resource):
                         'prix': row[3],
                         })
                 return {'data': r}
+            elif command == "set":
+                nom = request.json['nom']
+                desc = request.json['description']
+                prix = request.json['prix']
+                conn = sqlite3.connect('boutique.db')
+                cur = conn.cursor()
+                cur.execute('select * from produit where nom= ? and description= ?',
+                            (nom, desc))
+                if cur.fetchone() is None:
+                    cur.execute('insert into produit(nom, description, prix) values(?, ?, ?)',
+                                (nom, desc, prix))
+                    conn.commit()
+                    return {'code': 200}
+                else:
+                    return {'code': 500}
         return {'code': 500}
 
 
@@ -61,7 +76,8 @@ class User(Resource):
                     'id': row[0],
                     'login': row[1],
                     'nom': row[2],
-                    'prenom': row[3]
+                    'prenom': row[3],
+                    'role': row[5]
                     }
 
 
@@ -122,6 +138,10 @@ class Server:
         @self.app.route("/signup")
         def sign():
             return render_template("signup.html")
+
+        @self.app.route("/admin")
+        def admin():
+            return render_template("admin.html")
 
     def start(self):
         self.app.run()
