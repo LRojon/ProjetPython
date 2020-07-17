@@ -85,7 +85,7 @@ class User(Resource):
                         'role': row[5]
                         }
 
-#       Gère l'inscription de client
+        # Gère l'inscription de client
         elif command == "signup":
             login = request.json['login']
             nom = request.json['nom']
@@ -130,7 +130,7 @@ class Server:
                                  'GET,PUT,POST,DELETE,OPTIONS')
             return response
 
-#       route côté site
+        # route côté site
         @self.app.route("/")
         def index():
             return render_template("index.html")
