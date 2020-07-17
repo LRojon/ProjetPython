@@ -76,7 +76,7 @@
                 {
                     let res = xhr.response.prenom + " " + xhr.response.nom;
                     document.getElementById("hello").innerHTML = "Bonjour, " + res +
-                    '<a href="/ "> <button type="submit" id="submit" class="btn btn-danger">Déconnecter</button> </a>';
+                    ' <a href="/" class="btn btn-danger">Déconnecter</a>';
                     if(xhr.response.role == "admin")
                         select("#navList").innerHTML += '<li class="nav-item">' + 
                                                             '<a href="/admin" class="nav-link">Administration</a>' +

@@ -1,11 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import sys
 import json
-import os
 from flask import Flask, request, current_app, g, render_template
 from flask_restful import Resource, Api
-from flask_jsonpify import jsonify
 # L'utilisation de sqlite permet de lancer plus simplement le serveur
 import sqlite3
 
