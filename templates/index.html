@@ -45,7 +45,7 @@
             var dataSend = {login: $("#login").val(), password: $("#password").val()}
 
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/login');
+            xhr.open('POST', '/user/login');
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.responseType = "json";
             xhr.onload = function(){

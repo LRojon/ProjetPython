@@ -32,11 +32,11 @@ class Boutique(Resource):
                 prix = request.json['prix']
                 conn = sqlite3.connect('boutique.db')
                 cur = conn.cursor()
-                cur.execute('select * from produit where nom= ? and description= ?',
-                            (nom, desc))
+                cur.execute('select * from produit where nom= ? and ' +
+                            'description= ?', (nom, desc))
                 if cur.fetchone() is None:
-                    cur.execute('insert into produit(nom, description, prix) values(?, ?, ?)',
-                                (nom, desc, prix))
+                    cur.execute('insert into produit(nom, description, prix)' +
+                                'values(?, ?, ?)', (nom, desc, prix))
                     conn.commit()
                     return {'code': 200}
                 else:
@@ -44,68 +44,61 @@ class Boutique(Resource):
         return {'code': 500}
 
 
-class Login(Resource):
-
-    def post(self):
-        login = request.json['login']
-        password = request.json['password']
-        conn = sqlite3.connect('boutique.db')
-        cur = conn.cursor()
-        cur.execute('select * from client where login= ? and password= ?',
-                    (login, password))
-        row = cur.fetchone()
-        if row is None:
-            return {'code': 500}
-        else:
-            return {'code': 200}
-
-
 class User(Resource):
 
-    def post(self):
-        login = request.json['login']
-        conn = sqlite3.connect('boutique.db')
-        cur = conn.cursor()
-        cur.execute('select * from client where login= ?',
-                    (login,))
-        row = cur.fetchone()
-        if row is None:
-            return {'code': 500}
-        else:
-            return {
-                    'id': row[0],
-                    'login': row[1],
-                    'nom': row[2],
-                    'prenom': row[3],
-                    'role': row[5]
-                    }
-
-
-class Signup(Resource):
-
-    def post(self):
-        login = request.json['login']
-        nom = request.json['nom']
-        prenom = request.json['prenom']
-        password = request.json['password']
-        confirm = request.json['confirm']
-        conn = sqlite3.connect('boutique.db')
-        cur = conn.cursor()
-        if confirm == password:
+    def post(self, command):
+        if command == "login":
+            login = request.json['login']
+            password = request.json['password']
+            conn = sqlite3.connect('boutique.db')
+            cur = conn.cursor()
+            cur.execute('select * from client where login= ? and password= ?',
+                        (login, password))
+            row = cur.fetchone()
+            if row is None:
+                return {'code': 500}
+            else:
+                return {'code': 200}
+        elif command == "get":
+            login = request.json['login']
+            conn = sqlite3.connect('boutique.db')
+            cur = conn.cursor()
             cur.execute('select * from client where login= ?',
                         (login,))
             row = cur.fetchone()
             if row is None:
-                cur.execute('insert into client(login, nom, prenom, password' +
-                            ') values(?, ?, ?, ?)',
-                            (login, nom, prenom, password))
-                conn.commit()
-                return {'code': 200, 'message': 'OK'}
+                return {'code': 500}
             else:
-                return {'code': 500, 'message': 'Pseudo déjà utilisé.'}
-        else:
-            return {'code': 500, 'message': 'Les mots de passe ne correspond' +
-                    'ent pas.'}
+                return {
+                        'id': row[0],
+                        'login': row[1],
+                        'nom': row[2],
+                        'prenom': row[3],
+                        'role': row[5]
+                        }
+        elif command == "signup":
+            login = request.json['login']
+            nom = request.json['nom']
+            prenom = request.json['prenom']
+            password = request.json['password']
+            confirm = request.json['confirm']
+            conn = sqlite3.connect('boutique.db')
+            cur = conn.cursor()
+            if confirm == password:
+                cur.execute('select * from client where login= ?',
+                            (login,))
+                row = cur.fetchone()
+                if row is None:
+                    cur.execute('insert into client(login, nom, prenom, ' +
+                                'password, role) values(?, ?, ?, ?, ?)',
+                                (login, nom, prenom, password, "user"))
+                    conn.commit()
+                    return {'code': 200, 'message': 'OK'}
+                else:
+                    return {'code': 500, 'message': 'Pseudo déjà utilisé.'}
+            else:
+                return {'code': 500, 'message': 'Les mots de passe ne ' +
+                        'correspondent pas.'}
 
 
 class Server:
@@ -114,9 +107,7 @@ class Server:
         self.app = Flask(__name__)
         self.api = Api(self.app)
         self.api.add_resource(Boutique, '/<typex>/<command>')
-        self.api.add_resource(Login, '/login')
-        self.api.add_resource(User, '/user')
-        self.api.add_resource(Signup, '/checkSignup')
+        self.api.add_resource(User, '/user/<command>')
 
         @self.app.after_request
         def after_request(response):
@@ -136,7 +127,7 @@ class Server:
             return render_template("shop.html", login=login)
 
         @self.app.route("/signup")
-        def sign():
+        def signup():
             return render_template("signup.html")
 
         @self.app.route("/admin")
