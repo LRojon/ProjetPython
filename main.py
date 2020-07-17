@@ -26,6 +26,7 @@ class Boutique(Resource):
                         'prix': row[3],
                         })
                 return {'data': r}
+
             elif command == "set":
                 nom = request.json['nom']
                 desc = request.json['description']
@@ -59,6 +60,7 @@ class User(Resource):
                 return {'code': 500}
             else:
                 return {'code': 200}
+
         elif command == "get":
             login = request.json['login']
             conn = sqlite3.connect('boutique.db')
@@ -76,6 +78,7 @@ class User(Resource):
                         'prenom': row[3],
                         'role': row[5]
                         }
+
         elif command == "signup":
             login = request.json['login']
             nom = request.json['nom']
