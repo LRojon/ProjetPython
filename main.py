@@ -6,6 +6,7 @@ import os
 from flask import Flask, request, current_app, g, render_template
 from flask_restful import Resource, Api
 from flask_jsonpify import jsonify
+# L'utilisation de sqlite permet de lancer plus simplement le serveur
 import sqlite3
 
 
@@ -13,6 +14,7 @@ class Boutique(Resource):
 
     def post(self, typex, command):
         if typex == 'produits':
+            # Obtient tout les produits
             if command == 'get':
                 conn = sqlite3.connect('boutique.db')
                 cur = conn.cursor()
@@ -27,6 +29,7 @@ class Boutique(Resource):
                         })
                 return {'data': r}
 
+            # Permet l'insertion de produits
             elif command == "set":
                 nom = request.json['nom']
                 desc = request.json['description']
@@ -35,6 +38,7 @@ class Boutique(Resource):
                 cur = conn.cursor()
                 cur.execute('select * from produit where nom= ? and ' +
                             'description= ?', (nom, desc))
+                # Verifie si le produit existe déjà (nom, description)
                 if cur.fetchone() is None:
                     cur.execute('insert into produit(nom, description, prix)' +
                                 'values(?, ?, ?)', (nom, desc, prix))
@@ -48,6 +52,7 @@ class Boutique(Resource):
 class User(Resource):
 
     def post(self, command):
+        # Fonction de login
         if command == "login":
             login = request.json['login']
             password = request.json['password']
@@ -61,6 +66,7 @@ class User(Resource):
             else:
                 return {'code': 200}
 
+        # Obtient un utilisateur par son login
         elif command == "get":
             login = request.json['login']
             conn = sqlite3.connect('boutique.db')
@@ -79,6 +85,7 @@ class User(Resource):
                         'role': row[5]
                         }
 
+#       Gère l'inscription de client
         elif command == "signup":
             login = request.json['login']
             nom = request.json['nom']
@@ -104,9 +111,11 @@ class User(Resource):
                         'correspondent pas.'}
 
 
+# Classe principale
 class Server:
 
     def __init__(self):
+        # Mise en place des variables et des routes de l'api
         self.app = Flask(__name__)
         self.api = Api(self.app)
         self.api.add_resource(Boutique, '/<typex>/<command>')
@@ -121,6 +130,7 @@ class Server:
                                  'GET,PUT,POST,DELETE,OPTIONS')
             return response
 
+#       route côté site
         @self.app.route("/")
         def index():
             return render_template("index.html")
